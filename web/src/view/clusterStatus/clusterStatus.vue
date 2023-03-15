@@ -354,6 +354,6 @@ const enterDialog = async () => {
 
 <style>
 .el-input {
-  width: 100px;
+  /* width: 100px; */
 }
 </style>

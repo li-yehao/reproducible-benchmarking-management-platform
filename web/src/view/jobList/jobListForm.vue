@@ -5,20 +5,6 @@
         <el-form-item label="cluster_name:" prop="cluster_name">
           <el-input v-model="formData.cluster_name" :clearable="true" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="workload_name:" prop="workload_name">
-          <el-input v-model="formData.workload_name" :clearable="true" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="job_status:" prop="job_status">
-        <el-select v-model="formData.job_status" placeholder="请选择" style="width:100%" :clearable="true">
-          <el-option v-for="item in ['init', 'canceled', 'working', 'failure', 'done', 'processing', 'process_failure']" :key="item" :label="item" :value="item" />
-        </el-select>
-        </el-form-item>
-        <el-form-item label="svrinfo:" prop="svrinfo">
-          <el-switch v-model="formData.svrinfo" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否" clearable ></el-switch>
-        </el-form-item>
-        <el-form-item label="emon:" prop="emon">
-          <el-switch v-model="formData.emon" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否" clearable ></el-switch>
-        </el-form-item>
         <el-form-item label="executor_name:" prop="executor_name">
           <el-input v-model="formData.executor_name" :clearable="true" placeholder="请输入" />
         </el-form-item>
@@ -28,17 +14,16 @@
         <el-form-item label="end_time:" prop="end_time">
           <el-date-picker v-model="formData.end_time" type="date" placeholder="选择日期" :clearable="true"></el-date-picker>
         </el-form-item>
+        <el-form-item label="job_status:" prop="job_status">
+        <el-select v-model="formData.job_status" placeholder="请选择" style="width:100%" :clearable="true">
+          <el-option v-for="item in ['init', 'working', 'canceled', 'processing', 'process_failed', 'failed', 'done']" :key="item" :label="item" :value="item" />
+        </el-select>
+        </el-form-item>
+        <el-form-item label="cmd_line:" prop="cmd_line">
+          <el-input v-model="formData.cmd_line" :clearable="true" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="results:" prop="results">
           <el-input v-model="formData.results" :clearable="true" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="log_path:" prop="log_path">
-          <el-input v-model="formData.log_path" :clearable="true" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="svrinfo_path:" prop="svrinfo_path">
-          <el-input v-model="formData.svrinfo_path" :clearable="true" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="emon_path:" prop="emon_path">
-          <el-input v-model="formData.emon_path" :clearable="true" placeholder="请输入" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="save">保存</el-button>
@@ -51,16 +36,16 @@
 
 <script>
 export default {
-  name: 'Job_info'
+  name: 'Job_list'
 }
 </script>
 
 <script setup>
 import {
-  createJob_info,
-  updateJob_info,
-  findJob_info
-} from '@/api/jobInfo'
+  createJob_list,
+  updateJob_list,
+  findJob_list
+} from '@/api/jobList'
 
 // 自动获取字典
 import { getDictFunc } from '@/utils/format'
@@ -73,16 +58,11 @@ const router = useRouter()
 const type = ref('')
 const formData = ref({
             cluster_name: '',
-            workload_name: '',
-            svrinfo: false,
-            emon: false,
             executor_name: '',
             start_time: new Date(),
             end_time: new Date(),
+            cmd_line: '',
             results: '',
-            log_path: '',
-            svrinfo_path: '',
-            emon_path: '',
         })
 // 验证规则
 const rule = reactive({
@@ -99,9 +79,9 @@ const elFormRef = ref()
 const init = async () => {
  // 建议通过url传参获取目标数据ID 调用 find方法进行查询数据操作 从而决定本页面是create还是update 以下为id作为url参数示例
     if (route.query.id) {
-      const res = await findJob_info({ ID: route.query.id })
+      const res = await findJob_list({ ID: route.query.id })
       if (res.code === 0) {
-        formData.value = res.data.reji
+        formData.value = res.data.rejl
         type.value = 'update'
       }
     } else {
@@ -117,13 +97,13 @@ const save = async() => {
             let res
            switch (type.value) {
              case 'create':
-               res = await createJob_info(formData.value)
+               res = await createJob_list(formData.value)
                break
              case 'update':
-               res = await updateJob_info(formData.value)
+               res = await updateJob_list(formData.value)
                break
              default:
-               res = await createJob_info(formData.value)
+               res = await createJob_list(formData.value)
                break
            }
            if (res.code === 0) {

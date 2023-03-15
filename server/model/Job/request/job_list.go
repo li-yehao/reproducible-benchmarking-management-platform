@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-type Job_infoSearch struct{
-    Job.Job_info
+type Job_listSearch struct{
+    Job.Job_list
     StartCreatedAt *time.Time `json:"startCreatedAt" form:"startCreatedAt"`
     EndCreatedAt   *time.Time `json:"endCreatedAt" form:"endCreatedAt"`
     StartStart_time  *time.Time  `json:"startStart_time" form:"startStart_time"`

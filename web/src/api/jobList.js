@@ -1,96 +1,96 @@
 import service from '@/utils/request'
 
-// @Tags Job_info
-// @Summary 创建Job_info
+// @Tags Job_list
+// @Summary 创建Job_list
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body model.Job_info true "创建Job_info"
+// @Param data body model.Job_list true "创建Job_list"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /ji/createJob_info [post]
-export const createJob_info = (data) => {
+// @Router /jl/createJob_list [post]
+export const createJob_list = (data) => {
   return service({
-    url: '/ji/createJob_info',
+    url: '/jl/createJob_list',
     method: 'post',
     data
   })
 }
 
-// @Tags Job_info
-// @Summary 删除Job_info
+// @Tags Job_list
+// @Summary 删除Job_list
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body model.Job_info true "删除Job_info"
+// @Param data body model.Job_list true "删除Job_list"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /ji/deleteJob_info [delete]
-export const deleteJob_info = (data) => {
+// @Router /jl/deleteJob_list [delete]
+export const deleteJob_list = (data) => {
   return service({
-    url: '/ji/deleteJob_info',
+    url: '/jl/deleteJob_list',
     method: 'delete',
     data
   })
 }
 
-// @Tags Job_info
-// @Summary 删除Job_info
+// @Tags Job_list
+// @Summary 删除Job_list
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body request.IdsReq true "批量删除Job_info"
+// @Param data body request.IdsReq true "批量删除Job_list"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /ji/deleteJob_info [delete]
-export const deleteJob_infoByIds = (data) => {
+// @Router /jl/deleteJob_list [delete]
+export const deleteJob_listByIds = (data) => {
   return service({
-    url: '/ji/deleteJob_infoByIds',
+    url: '/jl/deleteJob_listByIds',
     method: 'delete',
     data
   })
 }
 
-// @Tags Job_info
-// @Summary 更新Job_info
+// @Tags Job_list
+// @Summary 更新Job_list
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body model.Job_info true "更新Job_info"
+// @Param data body model.Job_list true "更新Job_list"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
-// @Router /ji/updateJob_info [put]
-export const updateJob_info = (data) => {
+// @Router /jl/updateJob_list [put]
+export const updateJob_list = (data) => {
   return service({
-    url: '/ji/updateJob_info',
+    url: '/jl/updateJob_list',
     method: 'put',
     data
   })
 }
 
-// @Tags Job_info
-// @Summary 用id查询Job_info
+// @Tags Job_list
+// @Summary 用id查询Job_list
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data query model.Job_info true "用id查询Job_info"
+// @Param data query model.Job_list true "用id查询Job_list"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
-// @Router /ji/findJob_info [get]
-export const findJob_info = (params) => {
+// @Router /jl/findJob_list [get]
+export const findJob_list = (params) => {
   return service({
-    url: '/ji/findJob_info',
+    url: '/jl/findJob_list',
     method: 'get',
     params
   })
 }
 
-// @Tags Job_info
-// @Summary 分页获取Job_info列表
+// @Tags Job_list
+// @Summary 分页获取Job_list列表
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data query request.PageInfo true "分页获取Job_info列表"
+// @Param data query request.PageInfo true "分页获取Job_list列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /ji/getJob_infoList [get]
-export const getJob_infoList = (params) => {
+// @Router /jl/getJob_listList [get]
+export const getJob_listList = (params) => {
   return service({
-    url: '/ji/getJob_infoList',
+    url: '/jl/getJob_listList',
     method: 'get',
     params
   })

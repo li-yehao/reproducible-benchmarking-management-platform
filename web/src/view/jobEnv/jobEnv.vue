@@ -29,22 +29,23 @@
 
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="search" @click="onSubmit">查询</el-button>
-          <el-button icon="refresh" @click="onReset">重置</el-button>
+          <el-button type="primary" icon="search" @click="onSubmit">Search</el-button>
+          <el-button icon="refresh" @click="onReset">Reset</el-button>
+          <el-button icon="refresh" @click="Test">Test</el-button>
         </el-form-item>
       </el-form>
     </div>
     <div class="gva-table-box">
         <div class="gva-btn-list">
-            <el-button type="primary" icon="plus" @click="openDialog">新增</el-button>
+            <el-button type="primary" icon="plus" @click="openDialog">New</el-button>
             <el-popover v-model:visible="deleteVisible" placement="top" width="160">
-            <p>确定要删除吗？</p>
+            <p style="text-align: center;">Double Check</p>
             <div style="text-align: right; margin-top: 8px;">
-                <el-button type="primary" link @click="deleteVisible = false">取消</el-button>
-                <el-button type="primary" @click="onDelete">确定</el-button>
+                <el-button type="primary" link @click="deleteVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="onDelete">Confirm</el-button>
             </div>
             <template #reference>
-                <el-button icon="delete" style="margin-left: 10px;" :disabled="!multipleSelection.length" @click="deleteVisible = true">删除</el-button>
+                <el-button icon="delete" style="margin-left: 10px;" :disabled="!multipleSelection.length" @click="deleteVisible = true">Delete</el-button>
             </template>
             </el-popover>
         </div>
@@ -57,7 +58,7 @@
         @selection-change="handleSelectionChange"
         >
         <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="日期" width="180">
+        <el-table-column align="left" label="Date" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
         <el-table-column align="left" label="job_id" prop="job_id" width="120" />
@@ -65,10 +66,10 @@
         <el-table-column align="left" label="sub_catlog" prop="sub_catlog" width="120" />
         <el-table-column align="left" label="key_info" prop="key_info" width="120" />
         <el-table-column align="left" label="info_value" prop="info_value" width="120" />
-        <el-table-column align="left" label="按钮组">
+        <el-table-column align="left" label="Settings">
             <template #default="scope">
-            <el-button type="primary" link icon="edit" class="table-button" @click="updateJob_envFunc(scope.row)">变更</el-button>
-            <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>
+            <el-button type="primary" link icon="edit" class="table-button" @click="updateJob_envFunc(scope.row)">Edit</el-button>
+            <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">Delete</el-button>
             </template>
         </el-table-column>
         </el-table>
@@ -84,7 +85,7 @@
             />
         </div>
     </div>
-    <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">
+    <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="New Job Env">
       <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
         <el-form-item label="job_id:"  prop="job_id" >
           <el-input v-model.number="formData.job_id" :clearable="true" placeholder="请输入" />
@@ -104,8 +105,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="closeDialog">取 消</el-button>
-          <el-button type="primary" @click="enterDialog">确 定</el-button>
+          <el-button @click="closeDialog">Cancel</el-button>
+          <el-button type="primary" @click="enterDialog">Confirm</el-button>
         </div>
       </template>
     </el-dialog>
@@ -135,20 +136,20 @@ import { ref, reactive } from 'vue'
 
 // 自动化生成的字典（可能为空）以及字段
 const formData = ref({
-        job_id: 0,
-        catlog: '',
-        sub_catlog: '',
-        key_info: '',
-        info_value: '',
-        })
+  job_id: 0,
+  catlog: '',
+  sub_catlog: '',
+  key_info: '',
+  info_value: '',
+})
 
 // 验证规则
 const rule = reactive({
-               job_id : [{
-                   required: true,
-                   message: '',
-                   trigger: ['input','blur'],
-               }],
+  job_id : [{
+    required: true,
+    message: '',
+    trigger: ['input','blur'],
+  }],
 })
 
 const elFormRef = ref()
@@ -165,6 +166,24 @@ const searchInfo = ref({})
 const onReset = () => {
   searchInfo.value = {}
   getTableData()
+}
+
+const Test = async() => {
+  console.log("start")
+  const value = longTask();
+  console.log("end")
+}
+
+const longTask = () => {
+  return new Promise((resolve, reject) => {
+    // 模拟一个耗时的操作，比如网络请求或者计算
+    setTimeout(() => {
+      // 随机生成一个0到100之间的整数作为返回值
+      const result = Math.floor(Math.random() * 100);
+      console.log("value: ", result)
+      resolve(result); // 返回结果
+    }, 1000); // 延迟5秒
+  });
 }
 
 // 搜索
@@ -218,14 +237,14 @@ const handleSelectionChange = (val) => {
 
 // 删除行
 const deleteRow = (row) => {
-    ElMessageBox.confirm('确定要删除吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-    }).then(() => {
-            deleteJob_envFunc(row)
-        })
-    }
+  ElMessageBox.confirm('确定要删除吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    deleteJob_envFunc(row)
+  })
+}
 
 
 // 批量删除控制标记
@@ -233,59 +252,59 @@ const deleteVisible = ref(false)
 
 // 多选删除
 const onDelete = async() => {
-      const ids = []
-      if (multipleSelection.value.length === 0) {
-        ElMessage({
-          type: 'warning',
-          message: '请选择要删除的数据'
-        })
-        return
-      }
-      multipleSelection.value &&
-        multipleSelection.value.map(item => {
-          ids.push(item.ID)
-        })
-      const res = await deleteJob_envByIds({ ids })
-      if (res.code === 0) {
-        ElMessage({
-          type: 'success',
-          message: '删除成功'
-        })
-        if (tableData.value.length === ids.length && page.value > 1) {
-          page.value--
-        }
-        deleteVisible.value = false
-        getTableData()
-      }
+  const ids = []
+  if (multipleSelection.value.length === 0) {
+    ElMessage({
+      type: 'warning',
+      message: '请选择要删除的数据'
+    })
+    return
+  }
+  multipleSelection.value &&
+    multipleSelection.value.map(item => {
+      ids.push(item.ID)
+    })
+  const res = await deleteJob_envByIds({ ids })
+  if (res.code === 0) {
+    ElMessage({
+      type: 'success',
+      message: '删除成功'
+    })
+    if (tableData.value.length === ids.length && page.value > 1) {
+      page.value--
     }
+    deleteVisible.value = false
+    getTableData()
+  }
+}
 
 // 行为控制标记（弹窗内部需要增还是改）
 const type = ref('')
 
 // 更新行
 const updateJob_envFunc = async(row) => {
-    const res = await findJob_env({ ID: row.ID })
-    type.value = 'update'
-    if (res.code === 0) {
-        formData.value = res.data.reje
-        dialogFormVisible.value = true
-    }
+  const res = await findJob_env({ ID: row.ID })
+  type.value = 'update'
+  if (res.code === 0) {
+    formData.value = res.data.reje
+    dialogFormVisible.value = true
+  }
 }
 
 
 // 删除行
 const deleteJob_envFunc = async (row) => {
-    const res = await deleteJob_env({ ID: row.ID })
-    if (res.code === 0) {
-        ElMessage({
-                type: 'success',
-                message: '删除成功'
-            })
-            if (tableData.value.length === 1 && page.value > 1) {
-            page.value--
-        }
-        getTableData()
+  const res = await deleteJob_env({ ID: row.ID })
+  if (res.code === 0) {
+    ElMessage({
+      type: 'success',
+      message: '删除成功'
+    })
+    if (tableData.value.length === 1 && page.value > 1) {
+      page.value--
     }
+    getTableData()
+  }
 }
 
 // 弹窗控制标记
@@ -293,51 +312,48 @@ const dialogFormVisible = ref(false)
 
 // 打开弹窗
 const openDialog = () => {
-    type.value = 'create'
-    dialogFormVisible.value = true
+  type.value = 'create'
+  dialogFormVisible.value = true
 }
 
 // 关闭弹窗
 const closeDialog = () => {
-    dialogFormVisible.value = false
-    formData.value = {
-        job_id: 0,
-        catlog: '',
-        sub_catlog: '',
-        key_info: '',
-        info_value: '',
-        }
+  dialogFormVisible.value = false
+  formData.value = {
+    job_id: 0,
+    catlog: '',
+    sub_catlog: '',
+    key_info: '',
+    info_value: '',
+  }
 }
 // 弹窗确定
 const enterDialog = async () => {
-     elFormRef.value?.validate( async (valid) => {
-             if (!valid) return
-              let res
-              switch (type.value) {
-                case 'create':
-                  res = await createJob_env(formData.value)
-                  break
-                case 'update':
-                  res = await updateJob_env(formData.value)
-                  break
-                default:
-                  res = await createJob_env(formData.value)
-                  break
-              }
-              if (res.code === 0) {
-                ElMessage({
-                  type: 'success',
-                  message: '创建/更改成功'
-                })
-                closeDialog()
-                getTableData()
-              }
+  elFormRef.value?.validate( async (valid) => {
+    if (!valid) return
+    let res
+    switch (type.value) {
+      case 'create':
+        res = await createJob_env(formData.value)
+        break
+      case 'update':
+        res = await updateJob_env(formData.value)
+        break
+      default:
+        res = await createJob_env(formData.value)
+        break
+    }
+    if (res.code === 0) {
+      ElMessage({
+        type: 'success',
+        message: '创建/更改成功'
       })
+      closeDialog()
+      getTableData()
+    }
+  })
 }
 </script>
 
 <style>
-.el-input {
-  /* width: 100px; */
-}
 </style>

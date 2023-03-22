@@ -58,33 +58,33 @@
             <el-select v-model="searchInfo.enabled" clearable placeholder="请选择">
                 <el-option
                     key="true"
-                    label="是"
+                    label="true"
                     value="true">
                 </el-option>
                 <el-option
                     key="false"
-                    label="否"
+                    label="false"
                     value="false">
                 </el-option>
             </el-select>
             </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="search" @click="onSubmit">查询</el-button>
-          <el-button icon="refresh" @click="onReset">重置</el-button>
+          <el-button type="primary" icon="search" @click="onSubmit">Search</el-button>
+          <el-button icon="refresh" @click="onReset">Reset</el-button>
         </el-form-item>
       </el-form>
     </div>
     <div class="gva-table-box">
         <div class="gva-btn-list">
-            <el-button type="primary" icon="plus" @click="openDialog">新增</el-button>
-            <el-popover v-model:visible="deleteVisible" placement="top" width="160">
-            <p>确定要删除吗？</p>
+            <el-button type="primary" icon="plus" @click="openDialog" disabled>New</el-button>
+            <el-popover v-model:visible="deleteVisible" placement="top" width="180">
+            <p style="text-align: center;">Double Check</p>
             <div style="text-align: right; margin-top: 8px;">
-                <el-button type="primary" link @click="deleteVisible = false">取消</el-button>
-                <el-button type="primary" @click="onDelete">确定</el-button>
+                <el-button type="primary" link @click="deleteVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="onDelete">Confirm</el-button>
             </div>
             <template #reference>
-                <el-button icon="delete" style="margin-left: 10px;" :disabled="!multipleSelection.length" @click="deleteVisible = true">删除</el-button>
+                <el-button icon="delete" style="margin-left: 10px;" :disabled="!multipleSelection.length" @click="deleteVisible = true">Delete</el-button>
             </template>
             </el-popover>
         </div>
@@ -141,7 +141,7 @@
             />
         </div>
     </div>
-    <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">
+    <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="New Cluster Booking">
       <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
         <el-form-item label="cluster_name:"  prop="cluster_name" >
           <el-input v-model="formData.cluster_name" :clearable="true"  placeholder="请输入" />
@@ -158,8 +158,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="closeDialog">取 消</el-button>
-          <el-button type="primary" @click="enterDialog">确 定</el-button>
+          <el-button @click="closeDialog">Cancel</el-button>
+          <el-button type="primary" @click="enterDialog">Confirm</el-button>
         </div>
       </template>
     </el-dialog>
@@ -202,6 +202,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive } from 'vue'
 import { getClusterList, findCluster, updateCluster } from '@/api/clusterStatus'
 import { useRouter } from 'vue-router'
+import { getUserInfo } from '@/api/user'
 
 const router = useRouter()
 
@@ -351,8 +352,8 @@ const handleSelectionChange = (val) => {
 // 删除行
 const deleteRow = (row) => {
   ElMessageBox.confirm('确定要删除吗?', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+    confirmButtonText: 'Confirm',
+    cancelButtonText: 'Cancel',
     type: 'warning'
   }).then(() => {
     deleteCluster_bookingFunc(row)
@@ -369,7 +370,7 @@ const onDelete = async() => {
   if (multipleSelection.value.length === 0) {
     ElMessage({
       type: 'warning',
-      message: '请选择要删除的数据'
+      message: 'Please select the data to delete'
     })
     return
   }
@@ -381,7 +382,7 @@ const onDelete = async() => {
   if (res.code === 0) {
     ElMessage({
       type: 'success',
-      message: '删除成功'
+      message: 'Delete Successfully'
     })
     if (tableData.value.length === ids.length && page.value > 1) {
       page.value--
@@ -411,7 +412,7 @@ const deleteCluster_bookingFunc = async (row) => {
   if (res.code === 0) {
     ElMessage({
         type: 'success',
-        message: '删除成功'
+        message: 'Delete Successfully'
       })
       if (tableData.value.length === 1 && page.value > 1) {
       page.value--
@@ -458,7 +459,7 @@ const enterDialog = async () => {
     if (res.code === 0) {
       ElMessage({
         type: 'success',
-        message: '创建/更改成功'
+        message: 'Create/Edit Successfully'
       })
       closeDialog()
       getTableData()
@@ -481,14 +482,16 @@ const enterClusterDialog = async () => {
     if (!valid) return
     clusterBookingData.value.cluster_name = clusterStatusData.value.cluster_name
     clusterBookingData.value.enabled = true
-    // clusterBookingData.value.user_name = string(user)
+    const user = await getUserInfo()
+    clusterBookingData.value.booker_name = user.data.userInfo.userName
     const resBooking = await createCluster_booking(clusterBookingData.value)
     clusterStatusData.value.working_status = 'booked'
+    clusterStatusData.value.booker_name = user.data.userInfo.userName
     const resStatus = await updateCluster(clusterStatusData.value)
     if (resBooking.code === 0 && resStatus.code === 0) {
       ElMessage({
         type: 'success',
-        message: 'booking successfully'
+        message: 'Booked Successfully '
       })
       closeClusterDialog()
       getTableData()
@@ -537,7 +540,7 @@ const release = async(row) => {
     if (resBooking.code === 0 && resStatus.code === 0) {
       ElMessage({
         type: 'success',
-        message: 'release successfully'
+        message: 'Release Successfully'
       }) 
       getTableDataStatus()
       getTableData()

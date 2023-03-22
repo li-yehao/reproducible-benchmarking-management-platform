@@ -95,3 +95,35 @@ export const getJob_listList = (params) => {
     params
   })
 }
+
+// @Tags Job_list
+// @Summary 执行Job_list
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query request.PageInfo true "执行Job_list"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
+// @Router /jl/executeJob_list [get]
+export const executeJob_list = (params) => {
+  return service({
+    url: '/jl/executeJob_list',
+    method: 'get',
+    params
+  })
+}
+
+// @Tags Job_list
+// @Summary 取消Job_list
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query request.PageInfo true "取消Job_list"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
+// @Router /jl/cancelJob_list [get]
+export const cancelJob_list = (params) => {
+  return service({
+    url: '/jl/cancelJob_list',
+    method: 'get',
+    params
+  })
+}

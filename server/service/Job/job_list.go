@@ -1,11 +1,16 @@
 package Job
 
 import (
+    "encoding/json"
+	"fmt"
+	"os/exec"
+	"strconv"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/Job"
+	JobReq "github.com/flipped-aurora/gin-vue-admin/server/model/Job/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
-    JobReq "github.com/flipped-aurora/gin-vue-admin/server/model/Job/request"
-    "gorm.io/gorm"
+	"gorm.io/gorm"
 )
 
 type Job_listService struct {
@@ -80,12 +85,12 @@ func (jlService *Job_listService)GetJob_listInfoList(info JobReq.Job_listSearch)
     if info.Executor_name != "" {
         db = db.Where("executor_name = ?",info.Executor_name)
     }
-        if info.StartStart_time != nil && info.EndStart_time != nil {
-            db = db.Where("start_time BETWEEN ? AND ? ",info.StartStart_time,info.EndStart_time)
-        }
-        if info.StartEnd_time != nil && info.EndEnd_time != nil {
-            db = db.Where("end_time BETWEEN ? AND ? ",info.StartEnd_time,info.EndEnd_time)
-        }
+    if info.StartStart_time != nil && info.EndStart_time != nil {
+        db = db.Where("start_time BETWEEN ? AND ? ",info.StartStart_time,info.EndStart_time)
+    }
+    if info.StartEnd_time != nil && info.EndEnd_time != nil {
+        db = db.Where("end_time BETWEEN ? AND ? ",info.StartEnd_time,info.EndEnd_time)
+    }
     if info.Job_status != "" {
         db = db.Where("job_status = ?",info.Job_status)
     }
@@ -102,4 +107,72 @@ func (jlService *Job_listService)GetJob_listInfoList(info JobReq.Job_listSearch)
 
 	err = db.Limit(limit).Offset(offset).Find(&jls).Error
 	return  jls, total, err
+}
+
+// GetJob_list 根据id获取Job_list记录
+// Author [piexlmax](https://github.com/piexlmax)
+func (jlService *Job_listService)ExecuteJob_list(jl Job.Job_list) (err error) {
+	err = global.GVA_DB.Where("id = ?", jl.ID).First(&jl).Error
+    if err != nil {
+        return
+    }
+
+    remoteHost := "ssh " + jl.Cluster_name 
+    realCmd := remoteHost + " " + jl.Cmd_line
+    cmd := exec.Command("bash", "-c", realCmd)
+    err = cmd.Start()
+    if err != nil {
+        return
+    }
+
+    // use 'results' to store pid, for canceling job by its pid
+        // time.Sleep(100 * time.Millisecond)
+        // pidCmd := "ssh " + jl.Cluster_name + " " + "cat tmp"
+        // cmd2 := exec.Command("bash", "-c", pidCmd)
+        // out, err := cmd2.Output()
+        // if err != nil {
+        //     return
+        // }
+        // pid := string(out)
+    pid := cmd.Process.Pid
+    jl.Results = strconv.Itoa(pid)
+    err = global.GVA_DB.Save(&jl).Error
+    if err != nil {
+        return
+    }
+    err = cmd.Wait()
+    if err != nil {
+        return
+    }
+
+    // fetch results and status
+    gatewayPath := fmt.Sprintf("curl http://10.238.153.58/nfsdata/rbmp/%d/summary.json", jl.ID)
+    resultCmd := exec.Command("bash", "-c", gatewayPath)
+    results, err := resultCmd.Output()
+    jl.Results = string(results)
+    var resultsMap map[string]interface{}
+    json.Unmarshal(results, &resultsMap)
+    jl.Job_status = resultsMap["status"].(string)
+    err = global.GVA_DB.Save(&jl).Error
+    if err != nil {
+        return
+    }
+	return
+}
+
+// GetJob_list 根据id获取Job_list记录
+// Author [piexlmax](https://github.com/piexlmax)
+func (jlService *Job_listService)CancelJob_list(jl Job.Job_list) (err error) {
+	err = global.GVA_DB.Where("id = ?", jl.ID).First(&jl).Error
+    if err != nil || jl.Job_status != "working" {
+        return
+    }
+    cmd := exec.Command("kill", "-9", jl.Results)
+    err = cmd.Run()
+    if err != nil {
+        return
+    }
+    jl.Results = ""
+    err = global.GVA_DB.Save(&jl).Error
+	return
 }

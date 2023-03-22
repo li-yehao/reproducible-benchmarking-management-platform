@@ -23,5 +23,7 @@ func (s *Job_listRouter) InitJob_listRouter(Router *gin.RouterGroup) {
 	{
 		jlRouterWithoutRecord.GET("findJob_list", jlApi.FindJob_list)        // 根据ID获取Job_list
 		jlRouterWithoutRecord.GET("getJob_listList", jlApi.GetJob_listList)  // 获取Job_list列表
+		jlRouterWithoutRecord.GET("executeJob_list", jlApi.ExecuteJob_list)  // 根据ID执行Job_list
+		jlRouterWithoutRecord.GET("cancelJob_list", jlApi.CancelJob_list)    // 根据ID执行Job_list
 	}
 }

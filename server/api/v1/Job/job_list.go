@@ -117,13 +117,13 @@ func (jlApi *Job_listApi) UpdateJob_list(c *gin.Context) {
 		return
 	}
     jl.UpdatedBy = utils.GetUserID(c)
-      verify := utils.Rules{
-          "Cluster_name":{utils.NotEmpty()},
-      }
+	verify := utils.Rules{
+		"Cluster_name":{utils.NotEmpty()},
+	}
     if err := utils.Verify(jl, verify); err != nil {
       	response.FailWithMessage(err.Error(), c)
       	return
-     }
+	}
 	if err := jlService.UpdateJob_list(jl); err != nil {
         global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
@@ -183,4 +183,53 @@ func (jlApi *Job_listApi) GetJob_listList(c *gin.Context) {
             PageSize: pageInfo.PageSize,
         }, "获取成功", c)
     }
+}
+
+// GetJob_listList 执行Job_list
+// @Tags Job_list
+// @Summary 执行Job_list
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query JobReq.Job_listSearch true "执行Job_list"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
+// @Router /jl/executeJob_list [get]
+func (jlApi *Job_listApi) ExecuteJob_list(c *gin.Context) {
+	var jl Job.Job_list
+	err := c.ShouldBindQuery(&jl)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := jlService.ExecuteJob_list(jl); err != nil {
+        global.GVA_LOG.Error("执行失败!", zap.Error(err))
+		response.FailWithMessage("执行失败", c)
+	} else {
+		response.OkWithMessage("执行成功", c)
+	}
+	
+}
+
+// GetJob_listList 取消Job_list
+// @Tags Job_list
+// @Summary 取消Job_list
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query JobReq.Job_listSearch true "取消Job_list"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
+// @Router /jl/cancelJob_list [get]
+func (jlApi *Job_listApi) CancelJob_list(c *gin.Context) {
+	var jl Job.Job_list
+	err := c.ShouldBindQuery(&jl)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := jlService.CancelJob_list(jl); err != nil {
+        global.GVA_LOG.Error("取消失败!", zap.Error(err))
+		response.FailWithMessage("取消失败", c)
+	} else {
+		response.OkWithMessage("取消成功", c)
+	}
 }

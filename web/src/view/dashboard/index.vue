@@ -30,7 +30,19 @@
         <el-table-column width="55" />
         <el-table-column align="left" label="cluster_name" prop="cluster_name" width="120" />
         <el-table-column align="left" label="pmu_name" prop="pmu_name" width="120" />
-        <el-table-column align="left" label="working_status" prop="working_status" width="120" />
+        <el-table-column align="left" label="working_status" prop="working_status" width="120" >
+          <template #default="scope">
+            <el-tag v-if="scope.row.working_status == 'booked'" type="warning" effect="dark">
+              booked
+            </el-tag>
+            <el-tag v-if="scope.row.working_status == 'available'" type="success" effect="dark">
+              available
+            </el-tag>
+            <el-tag v-if="scope.row.working_status == 'working'" type="danger" effect="dark">
+              working
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column align="left" label="health_status" prop="health_status" width="120" />
         <el-table-column align="left" label="booker_name" prop="booker_name" width="120" />
         <el-table-column align="left" label="description" prop="description" width="120" />

@@ -37,6 +37,7 @@ func (jlApi *Job_listApi) CreateJob_list(c *gin.Context) {
     jl.CreatedBy = utils.GetUserID(c)
     verify := utils.Rules{
         "Cluster_name":{utils.NotEmpty()},
+        "Reason":{utils.NotEmpty()},
     }
 	if err := utils.Verify(jl, verify); err != nil {
     		response.FailWithMessage(err.Error(), c)
@@ -119,6 +120,7 @@ func (jlApi *Job_listApi) UpdateJob_list(c *gin.Context) {
     jl.UpdatedBy = utils.GetUserID(c)
 	verify := utils.Rules{
 		"Cluster_name":{utils.NotEmpty()},
+		"Reason":{utils.NotEmpty()},
 	}
     if err := utils.Verify(jl, verify); err != nil {
       	response.FailWithMessage(err.Error(), c)

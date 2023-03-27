@@ -65,7 +65,6 @@ func Routers() *gin.Engine {
 		JobRouter := router.RouterGroupApp.Job
 
 		JobRouter.InitJob_envRouter(PrivateGroup)
-
 		JobRouter.InitJob_listRouter(PrivateGroup)
 
 	}

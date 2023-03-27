@@ -11,7 +11,19 @@
         <el-table-column width="55" />
         <el-table-column align="left" label="cluster_name" prop="cluster_name" width="120" />
         <el-table-column align="left" label="pmu_name" prop="pmu_name" width="120" />
-        <el-table-column align="left" label="working_status" prop="working_status" width="120" />
+        <el-table-column align="left" label="working_status" prop="working_status" width="120" >
+          <template #default="scope">
+            <el-tag v-if="scope.row.working_status == 'booked'" type="warning" effect="dark">
+              booked
+            </el-tag>
+            <el-tag v-if="scope.row.working_status == 'available'" type="success" effect="dark">
+              available
+            </el-tag>
+            <el-tag v-if="scope.row.working_status == 'working'" type="danger" effect="dark">
+              working
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column align="left" label="health_status" prop="health_status" width="120" />
         <el-table-column align="left" label="booker_name" prop="booker_name" width="120" />
         <el-table-column align="left" label="description" prop="description" width="120" />
@@ -472,7 +484,7 @@ const clusterDialogFormVisible=ref(false)
 const closeClusterDialog = () => {
   clusterDialogFormVisible.value = false
   clusterBookingData.value = {
-    cluster_code: '',
+    cluster_name: '',
     booking_reason: '',
   }
 }
@@ -526,22 +538,26 @@ const release = async(row) => {
   const rescs = await findCluster({ ID: row.ID })
   clusterStatusData.value = rescs.data.recs
   // todo: double check
-  searchReleaseInfo.value.Cluster_name = clusterStatusData.value.cluster_name
+  searchReleaseInfo.value.cluster_name = clusterStatusData.value.cluster_name
   searchReleaseInfo.value.enabled = true
   const rescb = await getCluster_bookingList({ page: page.value, pageSize: pageSize.value, ...searchReleaseInfo.value })
   if (rescs.code === 0 && rescb.code === 0) {
-    console.log(rescb.data.list[0])
+    console.log(rescb.data)
     clusterBookingData.value = rescb.data.list[0]
     clusterBookingData.value.enabled = false
     console.log(clusterBookingData.value)
     const resBooking = await updateCluster_booking(clusterBookingData.value)
     clusterStatusData.value.working_status = 'available'
+    clusterStatusData.value.booker_name = ''
     const resStatus = await updateCluster(clusterStatusData.value)
     if (resBooking.code === 0 && resStatus.code === 0) {
       ElMessage({
         type: 'success',
         message: 'Release Successfully'
       }) 
+      clusterBookingData.value = {
+        booking_reason: '',
+      }
       getTableDataStatus()
       getTableData()
     }

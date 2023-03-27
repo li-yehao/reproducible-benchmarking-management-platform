@@ -88,6 +88,6 @@ func (cbService *Cluster_bookingService)GetCluster_bookingInfoList(info ClusterR
     	return
     }
 
-	err = db.Limit(limit).Offset(offset).Find(&cbs).Error
+	err = db.Order("id desc").Limit(limit).Offset(offset).Find(&cbs).Error
 	return  cbs, total, err
 }

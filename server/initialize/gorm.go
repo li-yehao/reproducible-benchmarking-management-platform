@@ -49,7 +49,8 @@ func RegisterTables() {
 		example.ExaFile{},
 		example.ExaCustomer{},
 		example.ExaFileChunk{},
-		example.ExaFileUploadAndDownload{}, Cluster.Cluster{}, Cluster.Cluster_booking{}, Job.Job_env{}, Job.Job_list{},
+		// warning: Job.Job_list will not be inited for text and varchar(191)
+		example.ExaFileUploadAndDownload{}, Cluster.Cluster{}, Cluster.Cluster_booking{}, Job.Job_env{},
 	)
 	if err != nil {
 		global.GVA_LOG.Error("register table failed", zap.Error(err))

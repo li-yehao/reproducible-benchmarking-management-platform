@@ -72,7 +72,19 @@
         </el-table-column>
         <el-table-column align="left" label="cluster_name" prop="cluster_name" width="120" />
         <el-table-column align="left" label="pmu_name" prop="pmu_name" width="120" />
-        <el-table-column align="left" label="working_status" prop="working_status" width="120" />
+        <el-table-column align="left" label="working_status" prop="working_status" width="120" >
+          <template #default="scope">
+            <el-tag v-if="scope.row.working_status == 'booked'" type="warning" effect="dark">
+              booked
+            </el-tag>
+            <el-tag v-if="scope.row.working_status == 'available'" type="success" effect="dark">
+              available
+            </el-tag>
+            <el-tag v-if="scope.row.working_status == 'working'" type="danger" effect="dark">
+              working
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column align="left" label="health_status" prop="health_status" width="120" />
         <el-table-column align="left" label="booker_name" prop="booker_name" width="120" />
         <el-table-column align="left" label="description" prop="description" width="120" />
@@ -100,20 +112,17 @@
         <el-form-item label="cluster_name:"  prop="cluster_name" >
           <el-input v-model="formData.cluster_name" :clearable="true"  placeholder="请输入" />
         </el-form-item>
-        <!-- <el-form-item label="pmu_name:"  prop="pmu_name" >
+        <el-form-item label="pmu_name:"  prop="pmu_name" >
           <el-input v-model="formData.pmu_name" :clearable="true"  placeholder="请输入" />
-        </el-form-item> -->
-        <!-- <el-form-item label="working_status:"  prop="working_status" >
+        </el-form-item>
+        <el-form-item label="working_status:"  prop="working_status" >
             <el-select v-model="formData.working_status" placeholder="请选择" style="width:100%" :clearable="true" >
                <el-option v-for="item in ['available', 'booked', 'working']" :key="item" :label="item" :value="item" />
             </el-select>
-        </el-form-item> -->
-        <!-- <el-form-item label="health_status:"  prop="health_status" >
+        </el-form-item>
+        <el-form-item label="health_status:"  prop="health_status" >
           <el-input v-model="formData.health_status" :clearable="true"  placeholder="请输入" />
-        </el-form-item> -->
-        <!-- <el-form-item label="booker_name:"  prop="booker_name" >
-          <el-input v-model="formData.booker_name" :clearable="true"  placeholder="请输入" />
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item label="description:"  prop="description" >
           <el-input v-model="formData.description" :clearable="true"  placeholder="请输入" />
         </el-form-item>
@@ -156,6 +165,7 @@ const formData = ref({
   health_status: '',
   booker_name: '',
   description: '',
+  working_status: 'available',
 })
 
 // 验证规则

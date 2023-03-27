@@ -2,48 +2,47 @@
   <div>
     <div class="gva-search-box">
       <el-form :inline="true" :model="searchInitInfo" class="demo-form-inline" @keyup.enter="onInitSubmit">
-      <el-form-item label="created_at">
-      <el-date-picker v-model="searchInitInfo.startCreatedAt" type="datetime" placeholder="开始时间"></el-date-picker>
-       —
-      <el-date-picker v-model="searchInitInfo.endCreatedAt" type="datetime" placeholder="结束时间"></el-date-picker>
-      </el-form-item>
+      
+        <el-form-item label="created_at">
+          <el-date-picker v-model="searchInitInfo.startCreatedAt" type="datetime" placeholder="start"></el-date-picker>
+          —
+          <el-date-picker v-model="searchInitInfo.endCreatedAt" type="datetime" placeholder="end"></el-date-picker>
+        </el-form-item>
+
         <el-form-item label="cluster_name">
-         <el-input v-model="searchInitInfo.cluster_name" placeholder="搜索条件" />
-
+         <el-input v-model="searchInitInfo.cluster_name" placeholder="criteria" />
         </el-form-item>
+
         <el-form-item label="executor_name">
-         <el-input v-model="searchInitInfo.executor_name" placeholder="搜索条件" />
-
+         <el-input v-model="searchInitInfo.executor_name" placeholder="criteria" />
         </el-form-item>
-        <el-form-item label="start_time">
-            
-            <el-date-picker v-model="searchInitInfo.startStart_time" type="datetime" placeholder="搜索条件（起）"></el-date-picker>
-            —
-            <el-date-picker v-model="searchInitInfo.endStart_time" type="datetime" placeholder="搜索条件（止）"></el-date-picker>
 
+        <el-form-item label="start_time">
+          <el-date-picker v-model="searchInitInfo.startStart_time" type="datetime" placeholder="start"></el-date-picker>
+          —
+          <el-date-picker v-model="searchInitInfo.endStart_time" type="datetime" placeholder="end"></el-date-picker>
         </el-form-item>
         <el-form-item label="end_time">
-            
-            <el-date-picker v-model="searchInitInfo.startEnd_time" type="datetime" placeholder="搜索条件（起）"></el-date-picker>
-            —
-            <el-date-picker v-model="searchInitInfo.endEnd_time" type="datetime" placeholder="搜索条件（止）"></el-date-picker>
-
+          <el-date-picker v-model="searchInitInfo.startEnd_time" type="datetime" placeholder="start"></el-date-picker>
+          —
+          <el-date-picker v-model="searchInitInfo.endEnd_time" type="datetime" placeholder="end"></el-date-picker>
         </el-form-item>
+
         <el-form-item label="job_status">
-         <el-input v-model="searchInitInfo.job_status" placeholder="搜索条件" disabled/>
-
+         <el-input v-model="searchInitInfo.job_status" placeholder="criteria" disabled/>
         </el-form-item>
+
         <el-form-item label="cmd_line">
-         <el-input v-model="searchInitInfo.cmd_line" placeholder="搜索条件" />
-
+         <el-input v-model="searchInitInfo.cmd_line" placeholder="criteria" />
         </el-form-item>
+
         <el-form-item label="results">
-         <el-input v-model="searchInitInfo.results" placeholder="搜索条件" />
-
+         <el-input v-model="searchInitInfo.results" placeholder="criteria" />
         </el-form-item>
+
         <el-form-item>
-          <el-button type="primary" icon="search" @click="onInitSubmit">查询</el-button>
-          <el-button icon="refresh" @click="onInitReset">重置</el-button>
+          <el-button type="primary" icon="search" @click="onInitSubmit">Search</el-button>
+          <el-button icon="refresh" @click="onInitReset">Reset</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -77,14 +76,59 @@
         <el-table-column align="left" label="reason" prop="reason" width="120" />
         <el-table-column align="left" label="cluster_name" prop="cluster_name" width="120" />
         <el-table-column align="left" label="executor_name" prop="executor_name" width="140" />
-         <el-table-column align="left" label="start_time" width="180">
-            <template #default="scope">{{ formatDate(scope.row.start_time) }}</template>
-         </el-table-column>
-         <el-table-column align="left" label="end_time" width="180">
-            <template #default="scope">{{ formatDate(scope.row.end_time) }}</template>
-         </el-table-column>
-        <el-table-column align="left" label="job_status" prop="job_status" width="120" />
-        <el-table-column align="left" label="cmd_line" prop="cmd_line" width="120" />
+        <el-table-column align="left" label="config" prop="config" width="120" >
+          <template #default="scope">
+            <div>
+              <el-popover placement="left-start" trigger="click">
+                <div class="popover-box">
+                  <pre>{{ scope.row.config }}</pre>
+                </div>
+                <template #reference>
+                  <el-icon style="cursor: pointer;"><warning /></el-icon>
+                </template>
+              </el-popover>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="start_time" width="180">
+          <template #default="scope">{{ formatDate(scope.row.start_time) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="end_time" width="180">
+          <template #default="scope">{{ formatDate(scope.row.end_time) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="job_status" prop="job_status" width="120" >
+          <template #default="scope">
+            <el-tag v-if="scope.row.job_status == 'INIT'" type="info" effect="dark">
+              INIT
+            </el-tag>
+            <el-tag v-if="scope.row.job_status == 'FAILED'" type="danger" effect="dark">
+              FAILED
+            </el-tag>
+            <el-tag v-if="scope.row.job_status == 'SUCCEEDED'" type="success" effect="dark">
+              SUCCEEDED
+            </el-tag>
+            <el-tag v-if="scope.row.job_status == 'WORKING'" type="warning" effect="dark">
+              WORKING
+            </el-tag>
+            <el-tag v-if="scope.row.job_status == 'CANCELED'" type="danger" effect="dark">
+              CANCELED
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="cmd_line" prop="cmd_line" width="120" >
+          <template #default="scope">
+            <div>
+              <el-popover placement="left-start" trigger="click">
+                <div class="popover-box">
+                  <pre>{{ scope.row.cmd_line }}</pre>
+                </div>
+                <template #reference>
+                  <el-icon style="cursor: pointer;"><warning /></el-icon>
+                </template>
+              </el-popover>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column align="left" label="results" prop="results" width="120" />
         <el-table-column align="left" label="Settings" width="250">
             <template #default="scope">
@@ -108,49 +152,49 @@
     </div>
     <div class="gva-search-box">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline" @keyup.enter="onSubmit">
-      <el-form-item label="created_at">
-      <el-date-picker v-model="searchInfo.startCreatedAt" type="datetime" placeholder="开始时间"></el-date-picker>
-       —
-      <el-date-picker v-model="searchInfo.endCreatedAt" type="datetime" placeholder="结束时间"></el-date-picker>
-      </el-form-item>
+        <el-form-item label="created_at">
+          <el-date-picker v-model="searchInfo.startCreatedAt" type="datetime" placeholder="start"></el-date-picker>
+          —
+          <el-date-picker v-model="searchInfo.endCreatedAt" type="datetime" placeholder="end"></el-date-picker>
+        </el-form-item>
+
         <el-form-item label="cluster_name">
-         <el-input v-model="searchInfo.cluster_name" placeholder="搜索条件" />
-
+         <el-input v-model="searchInfo.cluster_name" placeholder="criteria" />
         </el-form-item>
+
         <el-form-item label="executor_name">
-         <el-input v-model="searchInfo.executor_name" placeholder="搜索条件" />
-
+         <el-input v-model="searchInfo.executor_name" placeholder="criteria" />
         </el-form-item>
-        <el-form-item label="start_time">
-            
-            <el-date-picker v-model="searchInfo.startStart_time" type="datetime" placeholder="搜索条件（起）"></el-date-picker>
-            —
-            <el-date-picker v-model="searchInfo.endStart_time" type="datetime" placeholder="搜索条件（止）"></el-date-picker>
 
+        <el-form-item label="start_time">            
+          <el-date-picker v-model="searchInfo.startStart_time" type="datetime" placeholder="start"></el-date-picker>
+          —
+          <el-date-picker v-model="searchInfo.endStart_time" type="datetime" placeholder="end"></el-date-picker>
         </el-form-item>
-        <el-form-item label="end_time">
-            
-            <el-date-picker v-model="searchInfo.startEnd_time" type="datetime" placeholder="搜索条件（起）"></el-date-picker>
-            —
-            <el-date-picker v-model="searchInfo.endEnd_time" type="datetime" placeholder="搜索条件（止）"></el-date-picker>
 
+        <el-form-item label="end_time">            
+          <el-date-picker v-model="searchInfo.startEnd_time" type="datetime" placeholder="start"></el-date-picker>
+          —
+          <el-date-picker v-model="searchInfo.endEnd_time" type="datetime" placeholder="end"></el-date-picker>
         </el-form-item>
+
         <el-form-item label="job_status">
-         <el-input v-model="searchInfo.job_status" placeholder="搜索条件" />
-
+         <el-input v-model="searchInfo.job_status" placeholder="criteria" />
         </el-form-item>
+
         <el-form-item label="cmd_line">
-         <el-input v-model="searchInfo.cmd_line" placeholder="搜索条件" />
-
+         <el-input v-model="searchInfo.cmd_line" placeholder="criteria" />
         </el-form-item>
+
         <el-form-item label="results">
-         <el-input v-model="searchInfo.results" placeholder="搜索条件" />
-
+         <el-input v-model="searchInfo.results" placeholder="criteria" />
         </el-form-item>
+
         <el-form-item>
           <el-button type="primary" icon="search" @click="onSubmit">Search</el-button>
           <el-button icon="refresh" @click="onReset">Reset</el-button>
         </el-form-item>
+
       </el-form>
     </div>
     <div class="gva-table-box">
@@ -176,28 +220,91 @@
         @selection-change="handleSelectionChange"
         >
         <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="ID" prop="ID" width="120" />
+        <el-table-column align="left" label="ID" width="120" >
+          <template #default="scope">
+            <a href="http://10.238.153.58/nfsdata/rbmp/" target="_blank" rel="noopener noreferrer">{{ scope.row.ID }}</a>
+          </template>
+        </el-table-column>
         <el-table-column align="left" label="Date" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
         <el-table-column align="left" label="reason" prop="reason" width="120" />
-        <el-table-column align="left" label="os" prop="os" width="120" />
+        <!-- <el-table-column align="left" label="os" prop="os" width="120" /> -->
         <el-table-column align="left" label="cluster_name" prop="cluster_name" width="120" />
         <el-table-column align="left" label="executor_name" prop="executor_name" width="140" />
-         <el-table-column align="left" label="start_time" width="180">
-            <template #default="scope">{{ formatDate(scope.row.start_time) }}</template>
-         </el-table-column>
-         <el-table-column align="left" label="end_time" width="180">
-            <template #default="scope">{{ formatDate(scope.row.end_time) }}</template>
-         </el-table-column>
-        <el-table-column align="left" label="job_status" prop="job_status" width="120" />
-        <el-table-column align="left" label="cmd_line" prop="cmd_line" width="120" />
-        <el-table-column align="left" label="results" prop="results" width="120" />
+        <el-table-column align="left" label="config" prop="config" width="120" >
+          <template #default="scope">
+            <div>
+              <el-popover placement="left-start" trigger="click">
+                <div class="popover-box">
+                  <pre>{{ scope.row.config }}</pre>
+                </div>
+                <template #reference>
+                  <el-icon style="cursor: pointer;"><warning /></el-icon>
+                </template>
+              </el-popover>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="start_time" width="180">
+          <template #default="scope">{{ formatDate(scope.row.start_time) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="end_time" width="180">
+          <template #default="scope">{{ formatDate(scope.row.end_time) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="job_status" prop="job_status" width="120" >
+          <template #default="scope">
+            <el-tag v-if="scope.row.job_status == 'INIT'" type="info" effect="dark">
+              INIT
+            </el-tag>
+            <el-tag v-if="scope.row.job_status == 'FAILED'" type="danger" effect="dark">
+              FAILED
+            </el-tag>
+            <el-tag v-if="scope.row.job_status == 'SUCCEEDED'" type="success" effect="dark">
+              SUCCEEDED
+            </el-tag>
+            <el-tag v-if="scope.row.job_status == 'WORKING'" type="warning" effect="dark">
+              WORKING
+            </el-tag>
+            <el-tag v-if="scope.row.job_status == 'CANCELED'" type="danger" effect="dark">
+              CANCELED
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="cmd_line" prop="cmd_line" width="120" >
+          <template #default="scope">
+            <div>
+              <el-popover placement="left-start" trigger="click">
+                <div class="popover-box">
+                  <pre>{{ scope.row.cmd_line }}</pre>
+                </div>
+                <template #reference>
+                  <el-icon style="cursor: pointer;"><warning /></el-icon>
+                </template>
+              </el-popover>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="results" prop="results" width="120" >
+          <template #default="scope">
+            <div>
+              <el-popover placement="left-start" trigger="click">
+                <div class="popover-box">
+                  <pre>{{ scope.row.results }}</pre>
+                </div>
+                <template #reference>
+                  <el-icon style="cursor: pointer;"><warning /></el-icon>
+                </template>
+              </el-popover>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column align="left" label="Settings" width="250">
             <template #default="scope">
-            <el-button type="primary" link icon="edit" class="table-button" @click="cancelJobFunc(scope.row)" v-if="scope.row.job_status === 'working'" :disabled="false">Cancel</el-button>
+            <el-button type="primary" link icon="edit" class="table-button" @click="cancelJobFunc(scope.row)" v-if="scope.row.job_status === 'WORKING'" :disabled="false">Cancel</el-button>
             <el-button type="primary" link icon="edit" class="table-button" v-else :disabled="true">Cancel</el-button>
-            <el-button type="primary" link icon="edit" class="table-button" @click="updateJob_listFunc(scope.row)">Edit</el-button>
+            <!-- todo: copy old configs to init a job -->
+            <el-button type="primary" link icon="edit" class="table-button" @click="openCopyDialog(scope.row)">Copy</el-button>
             <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">Delete</el-button>
             </template>
         </el-table-column>
@@ -217,12 +324,18 @@
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="Init Job">
       <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
         <el-form-item label="cluster:" prop="cluster_name" style="width:80%">
-          <el-select v-model="formData.cluster_name" placeholder="请选择" >
+          <el-select v-model="formData.cluster_name" placeholder="select a cluster" >
             <el-option v-for="item in bookedCluster" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
+        <el-form-item label="reason:" prop="reason">
+          <el-input type="textarea" v-model="formData.reason" :clearable="true"  placeholder="benchmarking for ..." rows="3" />
+        </el-form-item>
         <el-form-item label="cmd_line:" prop="cmd_line">
-          <el-input type="textarea" v-model="formData.cmd_line" :clearable="true"  placeholder="请输入" rows="3" />
+          <el-input type="textarea" v-model="formData.cmd_line" :clearable="true"  placeholder="pls use absolute path e.g. python ~/pkb.py" rows="5" />
+        </el-form-item>
+        <el-form-item label="config:" prop="config">
+          <el-input type="textarea" v-model="formData.config" :clearable="true"  placeholder="" rows="15" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -261,16 +374,31 @@ import { getClusterList, updateCluster } from '@/api/clusterStatus'
 import { getCluster_bookingList } from '@/api/clusterBooking'
 import { getUserInfo } from '@/api/user'
 import { createJob_env, updateJob_env, getJob_envList } from '@/api/jobEnv'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
+
+const router = useRouter()
 
 // 自动化生成的字典（可能为空）以及字段
 const formData = ref({
   cluster_name: '',
   executor_name: '',
+  reason: '',
+  config: '',
   start_time: null,
   end_time: null,
   cmd_line: '',
   results: '',
 })
+
+const getConfig = async() => {
+  try {
+    const response = await axios.get('/configs/gms_config_example.yaml');
+    formData.value.config = response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 // 验证规则
 const rule = reactive({
@@ -280,6 +408,11 @@ const rule = reactive({
     trigger: ['input','blur'],
   }],
   cmd_line : [{
+    required: true,
+    message: '',
+    trigger: ['input','blur'],
+  }],
+  reason : [{
     required: true,
     message: '',
     trigger: ['input','blur'],
@@ -376,6 +509,7 @@ const getTableData = async() => {
   if (table.code === 0) {
     for (var i=0; i<table.data.list.length; i++) {
       // fetch envs from job_env by job_id
+      // todo: too much get env requests
       const envTable = await getJob_envList({ job_id: table.data.list[i].ID })
       if (envTable.code === 0) {
         for (var j=0; j<envTable.data.list.length; j++) {
@@ -395,11 +529,12 @@ getTableData()
 
 // 查询
 const getInitTableData = async() => {
-  searchInitInfo.value.job_status = "init"
+  searchInitInfo.value.job_status = "INIT"
   const table = await getJob_listList({ page: page.value, pageSize: pageSize.value, ...searchInitInfo.value })
   if (table.code === 0) {
     for (var i=0; i<table.data.list.length; i++) {
       // fetch envs from job_env by job_id
+      // todo: too much get env requests
       const envTable = await getJob_envList({ job_id: table.data.list[i].ID })
       if (envTable.code === 0) {
         for (var j=0; j<envTable.data.list.length; j++) {
@@ -554,6 +689,17 @@ const dialogFormVisible = ref(false)
 const openDialog = () => {
   type.value = 'create'
   dialogFormVisible.value = true
+  getConfig()
+  getbookedCluster()
+}
+
+// 打开copy弹窗
+const openCopyDialog = (row) => {
+  type.value = 'create'
+  dialogFormVisible.value = true
+  formData.value.cmd_line = row.cmd_line
+  formData.value.config = row.config
+  formData.value.reason = row.reason
   getbookedCluster()
 }
 
@@ -563,6 +709,8 @@ const closeDialog = () => {
   formData.value = {
     cluster_name: '',
     executor_name: '',
+    reason: '',
+    config: '',
     start_time: null,
     end_time: null,
     cmd_line: '',
@@ -578,7 +726,7 @@ const enterDialog = async () => {
       case 'create':
         const user = await getUserInfo()
         formData.value.executor_name = user.data.userInfo.userName
-        formData.value.job_status = "init"
+        formData.value.job_status = "INIT"
         res = await createJob_list(formData.value)
         break
       case 'update':
@@ -602,7 +750,6 @@ const enterDialog = async () => {
 
 // execute the inited job
 const executeJobFunc = async(row) => {
-  // todo: double check
   const permission = await getCluster_bookingList({ cluster_name: row.cluster_name, enabled: true })
   if ( permission.code !== 0 || permission.data.list.length === 0 ) {
     ElMessage({
@@ -637,22 +784,17 @@ const executeJobFunc = async(row) => {
       })
       return
     }
-    // todo: execute job really
+    // execute job 
     executeJob_list({ ID: row.ID })
     const executed = true
     if ( executed ) {
-      res0.data.rejl.job_status = "working"
-      res0.data.rejl.start_time = new Date()
-      const resjl = await updateJob_list(res0.data.rejl)
       res1.data.list[0].working_status = "working"
       const rescs = await updateCluster(res1.data.list[0])
-      if (resjl.code === 0 && rescs.code === 0) {
+      if ( rescs.code === 0) {
         ElMessage({
           type: 'success',
           message: 'Dispatch job Successfully'
         })
-        getTableData()
-        getInitTableData()
       }
     }
   } else {
@@ -662,6 +804,8 @@ const executeJobFunc = async(row) => {
     })
     return
   } 
+  // refresh the web
+  router.go(0)
 }
 // cancel the working job  
 const cancelJobFunc = async(row) => {
@@ -678,16 +822,13 @@ const cancelJobFunc = async(row) => {
       })
       return
     }
-    // todo: cancel job really
+    // cancel job 
     cancelJob_list({ ID: row.ID })
     const canceled = true
     if ( canceled ) {
-      res0.data.rejl.job_status = "canceled"
-      res0.data.rejl.end_time = new Date()
-      const resti = await updateJob_list(res0.data.rejl)
       res1.data.list[0].working_status = "booked"
       const rescs = await updateCluster(res1.data.list[0])
-      if (resti.code === 0 && rescs.code === 0) {
+      if ( rescs.code === 0 ) {
         ElMessage({
           type: 'success',
           message: 'Cancel Successfully'
@@ -705,4 +846,18 @@ const cancelJobFunc = async(row) => {
 </script>
 
 <style>
+.popover-box {
+  background: #112435;
+  color: #f08047;
+  height: 600px;
+  width: 420px;
+  overflow: auto;
+  overflow-y: auto;
+}
+.popover-box::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
+}
+.popover-box pre {
+  white-space: pre-wrap;
+}
 </style>

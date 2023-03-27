@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts ":c::l:" opt
+while getopts ":c::r::i:" opt
 do
   case $opt in
     c)
@@ -9,6 +9,9 @@ do
     i)
     id="$OPTARG"
     ;;
+    r)
+    reason="$OPTARG"
+    ;;
     ?)
     exit 1
     ;;
@@ -16,9 +19,12 @@ do
 done
 
 # execute job
+echo "execute job! cmd: '$cmd_line' id: $id reason: '$reason'"
+bash -c "$cmd_line"
 
 
 # grep env
+echo "grep env!"
 cpu=$(echo '{"cpu": {'$(lscpu | awk -F ': +' '{if(NR>1) printf ",\n"; printf "\"%s\": \"%s\"", $1, $2}' | sed 's/\" *\"/: null/g')'}}' | jq .)
 mem=$(awk 'BEGIN{print "{"} NR>0{if(NR>1)printf ",\n"; printf "\"%s\": %d", $1, $2} END{print "\n}"}' /proc/meminfo | jq '{ "mem": . }')
 cilium=$(cilium version | jq -Rn 'reduce inputs as $line ({}; . + ($line | split(": ") | {(.[0]): .[1]}))' | jq '{ "cilium": . }')
@@ -54,6 +60,6 @@ echo "$summary" | jq
 # workload=$(cat summary.json | jq .summary.workload)
 # host=$(cat summary.json | jq .summary.host)
 # timestamp=$(cat results.json | jq .result[2].timestamp)
-folder="$id"
+folder=~/rbmp/"$id"_"$reason"
 mkdir -p "$folder"
 mv summary.json results.json "$folder"

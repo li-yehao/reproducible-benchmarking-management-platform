@@ -31,7 +31,6 @@
         <el-form-item>
           <el-button type="primary" icon="search" @click="onSubmit">Search</el-button>
           <el-button icon="refresh" @click="onReset">Reset</el-button>
-          <el-button icon="refresh" @click="Test">Test</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -132,7 +131,10 @@ import {
 // 全量引入格式化工具 请按需保留
 import { getDictFunc, formatDate, formatBoolean, filterDict } from '@/utils/format'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
+const route = useRoute()
 
 // 自动化生成的字典（可能为空）以及字段
 const formData = ref({
@@ -168,24 +170,6 @@ const onReset = () => {
   getTableData()
 }
 
-const Test = async() => {
-  console.log("start")
-  const value = longTask();
-  console.log("end")
-}
-
-const longTask = () => {
-  return new Promise((resolve, reject) => {
-    // 模拟一个耗时的操作，比如网络请求或者计算
-    setTimeout(() => {
-      // 随机生成一个0到100之间的整数作为返回值
-      const result = Math.floor(Math.random() * 100);
-      console.log("value: ", result)
-      resolve(result); // 返回结果
-    }, 1000); // 延迟5秒
-  });
-}
-
 // 搜索
 const onSubmit = () => {
   page.value = 1
@@ -216,17 +200,11 @@ const getTableData = async() => {
   }
 }
 
-getTableData()
-
 // ============== 表格控制部分结束 ===============
 
 // 获取需要的字典 可能为空 按需保留
 const setOptions = async () =>{
 }
-
-// 获取需要的字典 可能为空 按需保留
-setOptions()
-
 
 // 多选数据
 const multipleSelection = ref([])
@@ -353,6 +331,23 @@ const enterDialog = async () => {
     }
   })
 }
+
+const init = async() => {
+  // 获取需要的字典 可能为空 按需保留
+  setOptions()
+  const job_id = route.params.job_id
+  if (job_id) {
+    searchInfo.value.job_id = job_id
+    const table = await getJob_envList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
+    if (table.code === 0) {
+      tableData.value = table.data.list
+      total.value = table.data.total
+      page.value = table.data.page
+      pageSize.value = table.data.pageSize
+    }
+  }
+}
+init()
 </script>
 
 <style>

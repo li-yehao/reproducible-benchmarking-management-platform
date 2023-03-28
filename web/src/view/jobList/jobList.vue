@@ -1,6 +1,8 @@
 <template>
   <div>
     <div class="gva-search-box">
+      <span style="font-weight: bold; font-size: 16px;">Inited Jobs</span>
+      <p></p>
       <el-form :inline="true" :model="searchInitInfo" class="demo-form-inline" @keyup.enter="onInitSubmit">
       
         <el-form-item label="created_at">
@@ -69,14 +71,11 @@
         @selection-change="handleSelectionChangeInit"
         >
         <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="ID" prop="ID" width="120" />
-        <el-table-column align="left" label="Date" width="180">
-            <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
-        </el-table-column>
+        <el-table-column align="left" label="ID" prop="ID" width="80" />
         <el-table-column align="left" label="reason" prop="reason" width="120" />
         <el-table-column align="left" label="cluster_name" prop="cluster_name" width="120" />
         <el-table-column align="left" label="executor_name" prop="executor_name" width="140" />
-        <el-table-column align="left" label="config" prop="config" width="120" >
+        <el-table-column align="left" label="config" prop="config" width="80" >
           <template #default="scope">
             <div>
               <el-popover placement="left-start" trigger="click">
@@ -89,12 +88,6 @@
               </el-popover>
             </div>
           </template>
-        </el-table-column>
-        <el-table-column align="left" label="start_time" width="180">
-          <template #default="scope">{{ formatDate(scope.row.start_time) }}</template>
-        </el-table-column>
-        <el-table-column align="left" label="end_time" width="180">
-          <template #default="scope">{{ formatDate(scope.row.end_time) }}</template>
         </el-table-column>
         <el-table-column align="left" label="job_status" prop="job_status" width="120" >
           <template #default="scope">
@@ -115,7 +108,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="cmd_line" prop="cmd_line" width="120" >
+        <el-table-column align="left" label="cmd_line" prop="cmd_line" width="100" >
           <template #default="scope">
             <div>
               <el-popover placement="left-start" trigger="click">
@@ -129,13 +122,22 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="results" prop="results" width="120" />
+        <el-table-column align="left" label="results" prop="results" width="80" />
         <el-table-column align="left" label="Settings" width="250">
             <template #default="scope">
             <el-button type="primary" link icon="edit" class="table-button" @click="executeJobFunc(scope.row)">Execute</el-button>
             <el-button type="primary" link icon="edit" class="table-button" @click="updateJob_listFunc(scope.row)">Edit</el-button>
             <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">Delete</el-button>
             </template>
+        </el-table-column>
+        <el-table-column align="left" label="Date" width="180">
+            <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="start_time" width="180">
+          <template #default="scope">{{ formatDate(scope.row.start_time) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="end_time" width="180">
+          <template #default="scope">{{ formatDate(scope.row.end_time) }}</template>
         </el-table-column>
         </el-table>
         <div class="gva-pagination">
@@ -150,7 +152,10 @@
             />
         </div>
     </div>
+    <p></p>
     <div class="gva-search-box">
+      <span style="font-weight: bold; font-size: 16px;">Job List</span>
+      <p></p>
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline" @keyup.enter="onSubmit">
         <el-form-item label="created_at">
           <el-date-picker v-model="searchInfo.startCreatedAt" type="datetime" placeholder="start"></el-date-picker>
@@ -199,7 +204,7 @@
     </div>
     <div class="gva-table-box">
         <div class="gva-btn-list">
-            <el-button type="primary" icon="plus" @click="openDialog">New</el-button>
+            <el-button type="primary" icon="search" @click="gotofileserver">FileServer</el-button>
             <el-popover v-model:visible="deleteVisible" placement="top" width="180">
             <p style="text-align: center;">Double Check</p>
             <div style="text-align: right; margin-top: 8px;">
@@ -220,19 +225,11 @@
         @selection-change="handleSelectionChange"
         >
         <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="ID" width="120" >
-          <template #default="scope">
-            <a href="http://10.238.153.58/nfsdata/rbmp/" target="_blank" rel="noopener noreferrer">{{ scope.row.ID }}</a>
-          </template>
-        </el-table-column>
-        <el-table-column align="left" label="Date" width="180">
-            <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
-        </el-table-column>
+        <el-table-column align="left" label="ID" prop="ID" width="80" />
         <el-table-column align="left" label="reason" prop="reason" width="120" />
-        <!-- <el-table-column align="left" label="os" prop="os" width="120" /> -->
         <el-table-column align="left" label="cluster_name" prop="cluster_name" width="120" />
         <el-table-column align="left" label="executor_name" prop="executor_name" width="140" />
-        <el-table-column align="left" label="config" prop="config" width="120" >
+        <el-table-column align="left" label="config" prop="config" width="80" >
           <template #default="scope">
             <div>
               <el-popover placement="left-start" trigger="click">
@@ -245,12 +242,6 @@
               </el-popover>
             </div>
           </template>
-        </el-table-column>
-        <el-table-column align="left" label="start_time" width="180">
-          <template #default="scope">{{ formatDate(scope.row.start_time) }}</template>
-        </el-table-column>
-        <el-table-column align="left" label="end_time" width="180">
-          <template #default="scope">{{ formatDate(scope.row.end_time) }}</template>
         </el-table-column>
         <el-table-column align="left" label="job_status" prop="job_status" width="120" >
           <template #default="scope">
@@ -271,7 +262,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="cmd_line" prop="cmd_line" width="120" >
+        <el-table-column align="left" label="cmd_line" prop="cmd_line" width="100" >
           <template #default="scope">
             <div>
               <el-popover placement="left-start" trigger="click">
@@ -285,7 +276,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="results" prop="results" width="120" >
+        <el-table-column align="left" label="results" prop="results" width="80" >
           <template #default="scope">
             <div>
               <el-popover placement="left-start" trigger="click">
@@ -301,12 +292,20 @@
         </el-table-column>
         <el-table-column align="left" label="Settings" width="250">
             <template #default="scope">
-            <el-button type="primary" link icon="edit" class="table-button" @click="cancelJobFunc(scope.row)" v-if="scope.row.job_status === 'WORKING'" :disabled="false">Cancel</el-button>
-            <el-button type="primary" link icon="edit" class="table-button" v-else :disabled="true">Cancel</el-button>
-            <!-- todo: copy old configs to init a job -->
+            <el-button type="primary" link icon="minus" class="table-button" @click="cancelJobFunc(scope.row)" v-if="scope.row.job_status === 'WORKING'" :disabled="false">Cancel</el-button>
+            <el-button type="primary" link icon="minus" class="table-button" v-else :disabled="true">Cancel</el-button>
             <el-button type="primary" link icon="edit" class="table-button" @click="openCopyDialog(scope.row)">Copy</el-button>
-            <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">Delete</el-button>
+            <el-button type="primary" link icon="search" @click="gotoEnv(scope.row)">Env</el-button>
             </template>
+        </el-table-column>
+        <el-table-column align="left" label="Date" width="180">
+            <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="start_time" width="180">
+          <template #default="scope">{{ formatDate(scope.row.start_time) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="end_time" width="180">
+          <template #default="scope">{{ formatDate(scope.row.end_time) }}</template>
         </el-table-column>
         </el-table>
         <div class="gva-pagination">
@@ -329,10 +328,22 @@
           </el-select>
         </el-form-item>
         <el-form-item label="reason:" prop="reason">
-          <el-input type="textarea" v-model="formData.reason" :clearable="true"  placeholder="benchmarking for ..." rows="3" />
+          <el-input type="textarea" v-model="formData.reason" :clearable="true"  placeholder="Reason for this benchmarking" rows="3" />
         </el-form-item>
         <el-form-item label="cmd_line:" prop="cmd_line">
-          <el-input type="textarea" v-model="formData.cmd_line" :clearable="true"  placeholder="pls use absolute path e.g. python ~/pkb.py" rows="5" />
+          <el-input type="textarea" v-model="formData.cmd_line" :clearable="true"  placeholder="Pls use absolute path, e.g. python /home/ansible/pkb.py" rows="5" />
+        </el-form-item>
+        <el-form-item>
+          <div>
+            <el-button @click="getConfig('gms')">GMS</el-button>
+            <el-button @click="getConfig('hotel')">Hotel</el-button>
+            <el-button @click="getConfig('social')">Social</el-button>
+            <el-button @click="getConfig('socialml')">SocialML</el-button>
+            <el-button type="primary" @click="getConfig('clear')">Clear</el-button>
+          </div>
+          <div>
+            <p>Note: Config file will be saved as ~/pkbConfig.yaml on the specified remote host</p>
+          </div>
         </el-form-item>
         <el-form-item label="config:" prop="config">
           <el-input type="textarea" v-model="formData.config" :clearable="true"  placeholder="" rows="15" />
@@ -391,10 +402,14 @@ const formData = ref({
   results: '',
 })
 
-const getConfig = async() => {
+const getConfig = async(workload) => {
   try {
-    const response = await axios.get('/configs/gms_config_example.yaml');
-    formData.value.config = response.data;
+    if ( workload==="clear" ) {
+      formData.value.config = ''
+    } else {
+      const response = await axios.get('/configs/' + workload + '_config_example.yaml')
+      formData.value.config = response.data
+    }
   } catch (error) {
     console.log(error);
   }
@@ -586,6 +601,9 @@ const deleteRow = (row) => {
   })
 }
 
+const gotofileserver = () => {
+  window.location.href = 'http://10.238.153.58/nfsdata/rbmp/'
+}
 
 // 批量删除控制标记
 const deleteVisible = ref(false)
@@ -689,7 +707,6 @@ const dialogFormVisible = ref(false)
 const openDialog = () => {
   type.value = 'create'
   dialogFormVisible.value = true
-  getConfig()
   getbookedCluster()
 }
 
@@ -843,6 +860,16 @@ const cancelJobFunc = async(row) => {
     })
   }
 }
+
+const gotoEnv = (row) => {
+  if (row) {
+    router.push({ name: 'jobEnv', params: {
+      job_id: row.ID
+    }})
+  } else {
+    router.push({ name: 'jobEnv' })
+  }
+}
 </script>
 
 <style>
@@ -859,5 +886,10 @@ const cancelJobFunc = async(row) => {
 }
 .popover-box pre {
   white-space: pre-wrap;
+}
+p::before {
+  content: "";
+  display: block;
+  margin: 15px 0;
 }
 </style>

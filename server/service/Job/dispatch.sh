@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts ":c::i::r::l:" opt
+while getopts ":c::i::r::l::f:" opt
 do
   case $opt in
     c)
@@ -14,6 +14,9 @@ do
     ;;
     r)
     reason="$OPTARG"
+    ;;
+    f)
+    config="$OPTARG"
     ;;
     ?)
     exit 1
@@ -42,6 +45,9 @@ if [ -z "$reason" ]; then
 fi
 
 # execute job and grep env at remote host, todo: move to ~
+echo "$config" > pkbConfig.yaml
+scp pkbConfig.yaml "ansible@$cluster":~
+mv pkbConfig.yaml
 scp ~/lyh/reproducible-benchmarking-management-platform/server/service/Job/execute_job.sh "ansible@$cluster":~
 ssh "ansible@$cluster" "bash execute_job.sh -c '$cmd_line' -i $id -r '$reason'"
 echo "execute job finish!"

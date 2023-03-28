@@ -131,7 +131,7 @@ func (jlService *Job_listService)ExecuteJob_list(jl Job.Job_list) (err error) {
     }
 
     // todo: move to ~
-    realCmd := fmt.Sprintf("bash ~/lyh/reproducible-benchmarking-management-platform/server/service/Job/dispatch.sh -l %s -c '%s' -i %d -r '%s'", jl.Cluster_name, jl.Cmd_line, jl.ID, jl.Reason)
+    realCmd := fmt.Sprintf("bash ~/lyh/reproducible-benchmarking-management-platform/server/service/Job/dispatch.sh -l %s -c '%s' -i %d -r '%s' -f '%s'", jl.Cluster_name, jl.Cmd_line, jl.ID, jl.Reason, jl.Config)
     cmd := exec.Command("bash", "-c", realCmd)
     err = cmd.Start()
     if err != nil {
@@ -185,10 +185,11 @@ func (jlService *Job_listService)ExecuteJob_list(jl Job.Job_list) (err error) {
     var resultsMap map[string]interface{}
     json.Unmarshal(results, &resultsMap)
     if len(resultsMap) == 0 || resultsMap["status"] == nil {
-        err = fmt.Errorf("results nil: %w", err)
-        return
+        err = fmt.Errorf("result is nil: %w", err)
+        jl.Job_status = "FAILED"
+    } else {
+        jl.Job_status = resultsMap["status"].(string)
     }
-    jl.Job_status = resultsMap["status"].(string)
     end_time := time.Now().In(loc).Format("2006-01-02 15:04:05")
     parsedEndTime, err := time.Parse("2006-01-02 15:04:05", end_time)
     jl.End_time = &parsedEndTime

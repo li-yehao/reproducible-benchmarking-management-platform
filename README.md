@@ -20,7 +20,7 @@
 
 username：firstname.lastname (e.g. yehao.li)
 
-password：123456
+password：firstname.lastname
 
 ## 2. How to use
 

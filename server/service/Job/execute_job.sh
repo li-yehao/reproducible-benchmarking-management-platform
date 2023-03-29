@@ -46,10 +46,10 @@ status=$(jq -s '.' /tmp/perfkitbenchmarker/runs/hotjag/completion_statuses.json 
 realStatus=$(echo "$status" | jq .status[0].status)
 if [ "$realStatus" == "\"SUCCEEDED\"" ]; then
   result=$(jq -s '.' /tmp/perfkitbenchmarker/runs/hotjag/perfkitbenchmarker_results.json | jq '{ "result": . }')
-  mv /tmp/perfkitbenchmarker/runs/hotjag/perfkitbenchmarker_results.json "$folder"
+  cp /tmp/perfkitbenchmarker/runs/hotjag/perfkitbenchmarker_results.json "$folder"
 else
   result=$(jq -s '.' /tmp/perfkitbenchmarker/runs/hotjag/completion_statuses.json | jq '{ "status_detail": .[0].status_detail }')
-  mv /tmp/perfkitbenchmarker/runs/hotjag/pkb.log "$folder"
+  cp /tmp/perfkitbenchmarker/runs/hotjag/pkb.log "$folder"
 fi
 
 json_array=("$cpu" "$mem" "$cilium" "$calico" "$pmu" "$k8s" "$result" "$node" "$status")
@@ -73,4 +73,4 @@ echo "$summary" | jq
 # workload=$(cat summary.json | jq .summary.workload)
 # host=$(cat summary.json | jq .summary.host)
 # timestamp=$(cat results.json | jq .result[2].timestamp)
-mv /tmp/perfkitbenchmarker/runs/hotjag/completion_statuses.json "$folder"
+cp /tmp/perfkitbenchmarker/runs/hotjag/completion_statuses.json "$folder"

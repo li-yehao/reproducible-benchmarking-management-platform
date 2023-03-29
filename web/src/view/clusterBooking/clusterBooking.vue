@@ -124,9 +124,9 @@
         </el-table-column>
         <el-table-column align="left" label="cluster_name" prop="cluster_name" width="120" />
         <el-table-column align="left" label="booker_name" prop="booker_name" width="120" />
-        <el-table-column align="left" label="enabled" prop="enabled" width="120">
+        <!-- <el-table-column align="left" label="enabled" prop="enabled" width="120">
             <template #default="scope">{{ formatBoolean(scope.row.enabled) }}</template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column align="left" label="booking_reason" prop="booking_reason" width="140" />
         <!-- <el-table-column align="left" label="create_by" width="180">
             <template #default="scope">{{ scope.row.CreatedBy }}</template>
@@ -137,7 +137,7 @@
         <el-table-column align="left" label="Settings">
             <template #default="scope">
             <!-- <el-button type="primary" link icon="edit" class="table-button" @click="updateCluster_bookingFunc(scope.row)">变更</el-button> -->
-            <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">Delete</el-button>
+            <!-- <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">Delete</el-button> -->
             </template>
         </el-table-column>
         </el-table>

@@ -327,6 +327,11 @@
             <el-option v-for="item in bookedCluster" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
+        <el-form-item label="feature:" prop="feature" style="width:80%">
+          <el-select v-model="formData.feature" multiple collapse-tags collapse-tags-tooltip placeholder="select features" >
+            <el-option v-for="item in featureDict" :key="item.label" :label="item.label" :value="item.label" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="reason:" prop="reason">
           <el-input type="textarea" v-model="formData.reason" :clearable="true"  placeholder="Reason for this benchmarking" rows="3" />
         </el-form-item>
@@ -400,7 +405,20 @@ const formData = ref({
   end_time: null,
   cmd_line: '',
   results: '',
+  feature: '',
+  job_id: 0,
+  key_info: '',
+  info_value: '',
 })
+
+const featureDict = ref([])
+const getFeatureDict = async() => {
+  featureDict.value = []
+  const res = await getDictFunc("feature")
+  for (var i=0; i<res.length; i++) {
+    featureDict.value.push({value: res[i].value, label: res[i].label})
+  }
+}
 
 const getConfig = async(workload) => {
   try {
@@ -525,13 +543,13 @@ const getTableData = async() => {
     for (var i=0; i<table.data.list.length; i++) {
       // fetch envs from job_env by job_id
       // todo: too much get env requests
-      const envTable = await getJob_envList({ job_id: table.data.list[i].ID })
-      if (envTable.code === 0) {
-        for (var j=0; j<envTable.data.list.length; j++) {
-          const key = envTable.data.list[j].key_info
-          table.data.list[i][key] = envTable.data.list[j].info_value
-        }
-      }
+      // const envTable = await getJob_envList({ job_id: table.data.list[i].ID })
+      // if (envTable.code === 0) {
+      //   for (var j=0; j<envTable.data.list.length; j++) {
+      //     const key = envTable.data.list[j].key_info
+      //     table.data.list[i][key] = envTable.data.list[j].info_value
+      //   }
+      // }
     }
     tableData.value = table.data.list
     total.value = table.data.total
@@ -550,13 +568,13 @@ const getInitTableData = async() => {
     for (var i=0; i<table.data.list.length; i++) {
       // fetch envs from job_env by job_id
       // todo: too much get env requests
-      const envTable = await getJob_envList({ job_id: table.data.list[i].ID })
-      if (envTable.code === 0) {
-        for (var j=0; j<envTable.data.list.length; j++) {
-          const key = envTable.data.list[j].key_info
-          table.data.list[i][key] = envTable.data.list[j].info_value
-        }
-      }
+      // const envTable = await getJob_envList({ job_id: table.data.list[i].ID })
+      // if (envTable.code === 0) {
+      //   for (var j=0; j<envTable.data.list.length; j++) {
+      //     const key = envTable.data.list[j].key_info
+      //     table.data.list[i][key] = envTable.data.list[j].info_value
+      //   }
+      // }
     }
     tableInitData.value = table.data.list
     totalInit.value = table.data.total
@@ -680,6 +698,7 @@ const updateJob_listFunc = async(row) => {
     formData.value = res.data.rejl
     dialogFormVisible.value = true
     getbookedCluster()
+    getFeatureDict()
   }
 }
 
@@ -708,6 +727,7 @@ const openDialog = () => {
   type.value = 'create'
   dialogFormVisible.value = true
   getbookedCluster()
+  getFeatureDict()
 }
 
 // 打开copy弹窗
@@ -718,6 +738,7 @@ const openCopyDialog = (row) => {
   formData.value.config = row.config
   formData.value.reason = row.reason
   getbookedCluster()
+  getFeatureDict()
 }
 
 // 关闭弹窗
@@ -732,6 +753,10 @@ const closeDialog = () => {
     end_time: null,
     cmd_line: '',
     results: '',
+    feature: '',
+    job_id: 0,
+    key_info: '',
+    info_value: '',
   }
 }
 // 弹窗确定
@@ -745,6 +770,13 @@ const enterDialog = async () => {
         formData.value.executor_name = user.data.userInfo.userName
         formData.value.job_status = "INIT"
         res = await createJob_list(formData.value)
+        res = await getJob_listList()
+        formData.value.job_id = res.data.list[0].ID
+        formData.value.key_info = "feature"
+        for (var i=0; i<featureDict.value.length; i++) {
+          formData.value.info_value = featureDict.value[i].label
+          res = await createJob_env(formData.value)
+        }
         break
       case 'update':
         res = await updateJob_list(formData.value)

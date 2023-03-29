@@ -64,7 +64,7 @@
         <el-table-column align="left" label="catlog" prop="catlog" width="120" />
         <el-table-column align="left" label="sub_catlog" prop="sub_catlog" width="120" />
         <el-table-column align="left" label="key_info" prop="key_info" width="120" />
-        <el-table-column align="left" label="info_value" prop="info_value" width="120" />
+        <el-table-column align="left" label="info_value" prop="info_value" width="200" />
         <el-table-column align="left" label="Settings">
             <template #default="scope">
             <el-button type="primary" link icon="edit" class="table-button" @click="updateJob_envFunc(scope.row)">Edit</el-button>

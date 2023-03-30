@@ -16,7 +16,7 @@
 > Reproducible-Benchmarking-Management-Platform is a backstage management system based on [Gin-vue-admin](https://www.gin-vue-admin.com), which commits to establishing a reusable and easy-to-use benchmarking platform.
 
 
-[Website](http://10.238.154.214:8080/): http://10.238.154.214:8080/
+[Website](http://yongfeng-desk.bj.intel.com:8080/): http://yongfeng-desk.bj.intel.com:8080/
 
 username：firstname.lastname (e.g. yehao.li)
 

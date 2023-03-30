@@ -542,7 +542,6 @@ const getTableData = async() => {
   if (table.code === 0) {
     for (var i=0; i<table.data.list.length; i++) {
       // fetch envs from job_env by job_id
-      // todo: too much get env requests
       // const envTable = await getJob_envList({ job_id: table.data.list[i].ID })
       // if (envTable.code === 0) {
       //   for (var j=0; j<envTable.data.list.length; j++) {
@@ -567,7 +566,6 @@ const getInitTableData = async() => {
   if (table.code === 0) {
     for (var i=0; i<table.data.list.length; i++) {
       // fetch envs from job_env by job_id
-      // todo: too much get env requests
       // const envTable = await getJob_envList({ job_id: table.data.list[i].ID })
       // if (envTable.code === 0) {
       //   for (var j=0; j<envTable.data.list.length; j++) {
@@ -858,8 +856,6 @@ const executeJobFunc = async(row) => {
 }
 // cancel the working job  
 const cancelJobFunc = async(row) => {
-  // todo: double check
-  
   const res0 = await findJob_list({ ID: row.ID })
   // only the user who create the job can cancel a working job  && res0.data.reti.booker_name === user
   if ( res0.code === 0 ) {

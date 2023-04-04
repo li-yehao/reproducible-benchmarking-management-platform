@@ -60,6 +60,11 @@ export default ({
           target: `${process.env.VITE_BASE_PATH}:${process.env.VITE_SERVER_PORT}/`, // 代理到 目标路径
           changeOrigin: true,
           rewrite: path => path.replace(new RegExp('^' + process.env.VITE_BASE_API), ''),
+        },
+        '/configs': {
+          target: 'http://10.238.153.58/nfsdata/rbmp/',
+          changeOrigin: true,
+          rewrite:path => path.replace(new RegExp('^' + '/configs'), ''),
         }
       },
     },
